@@ -1,2 +1,2 @@
 # JAGE
-Just Another Game Engine
+**J**ust **A**nother **G**ame **E**ngine
