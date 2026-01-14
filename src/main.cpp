@@ -30,9 +30,10 @@ const char *fragmentShaderSource = "#version 330 core\n"
 
 const char *fragmentShaderSource2 = "#version 330 core\n"
     "out vec4 FragColor;\n"
+    "uniform vec4 myColor;\n"
     "void main()\n"
     "{\n"
-    "FragColor = vec4(0.8f, 0.8f, 0.1f, 1.0f);\n"
+    "FragColor = myColor;\n"
     "}\0";
 
 int main(int argc, const char * argv[]) {
@@ -200,6 +201,10 @@ int main(int argc, const char * argv[]) {
     // Optionally set wireframe mode
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     
+    // Fragment Shader Uniform Variables
+    float greenValue;
+    int vertexColorLocation;
+    
     while(!glfwWindowShouldClose(window))
     {
         
@@ -215,6 +220,12 @@ int main(int argc, const char * argv[]) {
 
         // Use second shader program to change color of the second triangle
         glUseProgram(shaderProgram2);
+        
+        // ===== Fragment Shader Uniform Updating =====
+        greenValue = (sin(glfwGetTime()) / 2.0f) + 0.5f;
+        vertexColorLocation = glGetUniformLocation(shaderProgram2, "myColor");
+        glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+        
         glBindVertexArray(VAOs[1]);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
