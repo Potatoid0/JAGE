@@ -25,6 +25,13 @@ const char *fragmentShaderSource = "#version 330 core\n"
     "FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
     "}\0";
 
+const char *fragmentShaderSource2 = "#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "void main()\n"
+    "{\n"
+    "FragColor = vec4(0.8f, 0.8f, 0.1f, 1.0f);\n"
+    "}\0";
+
 int main(int argc, const char * argv[]) {
 
     char infoLog[512];
@@ -117,6 +124,20 @@ int main(int argc, const char * argv[]) {
         exit(EXIT_FAILURE);
     }
     
+    // Fragment Shader 2:
+    unsigned int fragmentShader2;
+    fragmentShader2 = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader2, 1, &fragmentShaderSource2, NULL);
+    glCompileShader(fragmentShader2);
+    glGetShaderiv(fragmentShader2, GL_COMPILE_STATUS, &success);
+    if(!success)
+    {
+        glGetShaderInfoLog(fragmentShader2, 512, NULL, infoLog);
+        std::cerr << "ERROR: Fragment Shader failed to compile:\n" << infoLog << std::endl;
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+    
     // Shader Program:
     unsigned int shaderProgram;
     shaderProgram = glCreateProgram();
@@ -127,6 +148,21 @@ int main(int argc, const char * argv[]) {
     if(!success)
     {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+        std::cerr << "ERROR: Failed to link shader program:\n" << infoLog << std::endl;
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+    
+    // Shader Program 2:
+    unsigned int shaderProgram2;
+    shaderProgram2 = glCreateProgram();
+    glAttachShader(shaderProgram2, vertexShader);
+    glAttachShader(shaderProgram2, fragmentShader2);
+    glLinkProgram(shaderProgram2);
+    glGetProgramiv(shaderProgram2, GL_LINK_STATUS, &success);
+    if(!success)
+    {
+        glGetProgramInfoLog(shaderProgram2, 512, NULL, infoLog);
         std::cerr << "ERROR: Failed to link shader program:\n" << infoLog << std::endl;
         glfwTerminate();
         exit(EXIT_FAILURE);
@@ -172,6 +208,8 @@ int main(int argc, const char * argv[]) {
         glBindVertexArray(VAOs[0]);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
+        // Use second shader program to change color of the second triangle
+        glUseProgram(shaderProgram2);
         glBindVertexArray(VAOs[1]);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
