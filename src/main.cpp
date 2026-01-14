@@ -74,9 +74,14 @@ int main(int argc, const char * argv[]) {
     // I moved it up to the corner to make room for a square
     float vertices[] =
     {
-        0.0f,  0.5f, 0.0f,
-       -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f
+        // First triangle
+       -0.5f,  0.5f, 0.0f,
+       -1.0f, -0.5f, 0.0f,
+        0.0f, -0.5f, 0.0f,
+        //Second triangle
+        0.5f, 0.5f, 0.0f,
+        0.0f, -0.5f, 0.0f,
+        1.0f, -0.5f, 0.0f
     };
     
     // OpenGL also has Element Buffer Objects, which are used to store vertex data without overlapping points
@@ -230,7 +235,7 @@ int main(int argc, const char * argv[]) {
         glBindVertexArray(VAO);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
         
         //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         
