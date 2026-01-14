@@ -20,6 +20,16 @@ const char *vertexShaderSource = "#version 330 core\n"
     "vertexColor = vec4(0.5, 0.0, 0.0, 1.0);\n"
     "}\0";
 
+const char *vertexShaderSource2 = "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "layout (location = 1) in vec3 aColor;\n"
+    "out vec3 ourColor;\n"
+    "void main()\n"
+    "{\n"
+    "gl_Position = vec4(aPos, 1.0);\n"
+    "ourColor = aColor;\n"
+    "}\0";
+
 const char *fragmentShaderSource = "#version 330 core\n"
     "out vec4 FragColor;\n"
     "in vec4 vertexColor;\n"
@@ -30,10 +40,10 @@ const char *fragmentShaderSource = "#version 330 core\n"
 
 const char *fragmentShaderSource2 = "#version 330 core\n"
     "out vec4 FragColor;\n"
-    "uniform vec4 myColor;\n"
+    "in vec3 ourColor;\n"
     "void main()\n"
     "{\n"
-    "FragColor = myColor;\n"
+    "FragColor = vec4(ourColor, 1.0);\n"
     "}\0";
 
 int main(int argc, const char * argv[]) {
@@ -92,16 +102,16 @@ int main(int argc, const char * argv[]) {
     
     float verticesRightTri[] =
     {
-        0.5f, 0.5f, 0.0f,
-        0.0f, -0.5f, 0.0f,
-        1.0f, -0.5f, 0.0f
+        0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+        1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
     };
     
     // ===== Creating the Shaders =====
     // Vertex Shader:
     
     int success;
-    unsigned int vertexShader;
+    unsigned int vertexShader, vertexShader2;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
     glCompileShader(vertexShader);
@@ -111,6 +121,17 @@ int main(int argc, const char * argv[]) {
     if(!success)
     {
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        std::cerr << "ERROR: Vertex Shader failed to compile:\n" << infoLog << std::endl;
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+    vertexShader2 = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader2, 1, &vertexShaderSource2, NULL);
+    glCompileShader(vertexShader2);
+    glGetShaderiv(vertexShader2, GL_COMPILE_STATUS, &success);
+    if(!success)
+    {
+        glGetShaderInfoLog(vertexShader2, 512, NULL, infoLog);
         std::cerr << "ERROR: Vertex Shader failed to compile:\n" << infoLog << std::endl;
         glfwTerminate();
         exit(EXIT_FAILURE);
@@ -162,7 +183,7 @@ int main(int argc, const char * argv[]) {
     // Shader Program 2:
     unsigned int shaderProgram2;
     shaderProgram2 = glCreateProgram();
-    glAttachShader(shaderProgram2, vertexShader);
+    glAttachShader(shaderProgram2, vertexShader2);
     glAttachShader(shaderProgram2, fragmentShader2);
     glLinkProgram(shaderProgram2);
     glGetProgramiv(shaderProgram2, GL_LINK_STATUS, &success);
@@ -177,6 +198,8 @@ int main(int argc, const char * argv[]) {
     // We no longer need the individual shader data now that it's linked to the program, deallocate
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+    glDeleteShader(vertexShader2);
+    glDeleteShader(vertexShader2);
     
     // ===== Create Vertex Array Objects and Buffer Objects =====
     // Generate VBO and VAOs
@@ -195,15 +218,18 @@ int main(int argc, const char * argv[]) {
     glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(verticesRightTri), verticesRightTri, GL_STATIC_DRAW);
     //first param is offset which we only set to 0 because it's tightly packed, therefore OpenGL can figure it out
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
   
     // Optionally set wireframe mode
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     
     // Fragment Shader Uniform Variables
     float greenValue;
-    int vertexColorLocation;
+    int vertexColorLocation = glGetUniformLocation(shaderProgram2, "myColor");
     
     while(!glfwWindowShouldClose(window))
     {
@@ -223,7 +249,6 @@ int main(int argc, const char * argv[]) {
         
         // ===== Fragment Shader Uniform Updating =====
         greenValue = (sin(glfwGetTime()) / 2.0f) + 0.5f;
-        vertexColorLocation = glGetUniformLocation(shaderProgram2, "myColor");
         glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
         
         glBindVertexArray(VAOs[1]);
