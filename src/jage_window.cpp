@@ -8,7 +8,7 @@
 #include "glad/glad.h" //needs to be included prior to GLFW
 #include "GLFW/glfw3.h"
 #include <iostream>
-#include "window.hpp"
+#include "jage_window.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {

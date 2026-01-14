@@ -6,7 +6,8 @@
 //
 #include "glad/glad.h" //needs to be included prior to GLFW
 #include "GLFW/glfw3.h"
-#include "window.hpp"
+#include "jage_window.hpp"
+#include "jage_shaders.hpp"
 #include <iostream>
 
 // GLSL Vertex and Fragment Shaders, for now just stored as C style strings
