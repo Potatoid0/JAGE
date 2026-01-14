@@ -72,11 +72,11 @@ int main(int argc, const char * argv[]) {
     
     // Create the vertices of a triangle, stored within a float array
     // I moved it up to the corner to make room for a square
-    float vertices2[] =
+    float vertices[] =
     {
-       -0.75f, 0.0f, 0.0f,
-       -0.25f, 0.0f, 0.0f,
-       -0.5f,  0.75f, 0.0f
+        0.0f,  0.5f, 0.0f,
+       -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f
     };
     
     // OpenGL also has Element Buffer Objects, which are used to store vertex data without overlapping points
@@ -84,7 +84,7 @@ int main(int argc, const char * argv[]) {
     // example given is a square would have two overlapping points when drawing two triangles
     
     
-    float vertices[] =
+    float vertices2[] =
     {
       // Triangle 1
       0.75f,  0.0f,  0.0f, // top right
@@ -226,14 +226,16 @@ int main(int argc, const char * argv[]) {
         glClear(GL_COLOR_BUFFER_BIT); // draws background color to window
         
         glUseProgram(shaderProgram);
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
         
-        //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBindVertexArray(VAO);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        
+        //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        
+        glBindVertexArray(0);
+
         
         glfwSwapBuffers(window);
         glfwPollEvents();
