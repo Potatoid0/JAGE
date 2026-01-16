@@ -58,16 +58,16 @@ int main(int argc, const char * argv[]) {
     // Create two triangles
     float verticesLeftTri[] =
     {
-       -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
-       -1.0f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f
+       -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 0.0f,
+       -1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f
     };
     
     float verticesRightTri[] =
     {
-        0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-        0.0f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-        1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
+        0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f,
+        1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f
     };
     
     // TESTING NEW SHADER CLASS
