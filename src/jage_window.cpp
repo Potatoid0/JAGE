@@ -10,15 +10,64 @@
 #include <iostream>
 #include "jage_window.hpp"
 
+
+JAGEWindow::JAGEWindow()
+{
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+    
+    window = glfwCreateWindow(width, height, windowTitle.c_str(), NULL, NULL);
+    if(!window)
+    {
+        std::cerr << "ERROR: Failed to create main game window" << std::endl;
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+    
+    glfwMakeContextCurrent(window);
+    
+    // Initialize GLAD for OS-specific function pointers
+    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cerr << "Failed to initialize GLAD" << std::endl;
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+    
+    // roundabout way of setting window size OpenGL is able to draw to due to macOS dpi scaling issues
+    glfwGetFramebufferSize(window, &realWidth, &realHeight);
+    glViewport(0, 0, realWidth, realHeight);
+    
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    
+}
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
-void processWindowInput(GLFWwindow* window)
+void JAGEWindow::processInput()
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
+}
+
+void JAGEWindow::getInput()
+{
+    glfwPollEvents();
+}
+
+void JAGEWindow::terminate()
+{
+    glfwTerminate();
 }

@@ -13,7 +13,7 @@
 int main(int argc, const char * argv[]) {
 
 
-    
+    /*
     int width, height, realWidth, realHeight;
     width = 800;
     height = 600;
@@ -38,23 +38,20 @@ int main(int argc, const char * argv[]) {
     }
     
     glfwMakeContextCurrent(window);
-    
+    */
     // Need to setup glad for OS-specific function pointers for OpenGL
-    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cerr << "Failed to initialize GLAD" << std::endl;
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
+    JAGEWindow gameWindow;
+
 
     // Next need to tell OpenGL the size of the rendering window
     // Rendering window has issues with macOS DPI scaling, fixing by using glfwGetFrameBufferSize, rather than directly telling OpenGL to use 800 x 600
+    /*
     glfwGetFramebufferSize(window, &realWidth, &realHeight);
     glViewport(0, 0, realWidth, realHeight);
     
     // Used for resizing the window
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    
+    */
     // Create two triangles
     float verticesLeftTri[] =
     {
@@ -108,11 +105,11 @@ int main(int argc, const char * argv[]) {
     
     newShader.setFloat("offset", offset);
     
-    while(!glfwWindowShouldClose(window))
+    while(!glfwWindowShouldClose(gameWindow.window))
     {
         
-        processWindowInput(window);
-        
+       // processWindowInput(window);
+        gameWindow.processInput();
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
@@ -126,17 +123,15 @@ int main(int argc, const char * argv[]) {
         glBindVertexArray(VAOs[0]);
         glDrawArrays(GL_TRIANGLES, 0, 3);
         
-        // ===== Fragment Shader Uniform Updating =====
-        //greenValue = (sin(glfwGetTime()) / 2.0f) + 0.5f;
-        //glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
         
         //glBindVertexArray(VAOs[1]);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glBindVertexArray(0);
         
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        glfwSwapBuffers(gameWindow.window);
+        //glfwPollEvents();
+        gameWindow.getInput();
     }
     
     // Cleanly shut down
@@ -144,7 +139,8 @@ int main(int argc, const char * argv[]) {
     glDeleteVertexArrays(2, VAOs);
     glDeleteBuffers(2, VBOs);
     //glDeleteProgram(shaderProgram);
-    glfwTerminate();
+    //glfwTerminate();
+    gameWindow.terminate();
     
     return EXIT_SUCCESS;
 }

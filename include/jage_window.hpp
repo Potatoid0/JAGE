@@ -12,9 +12,27 @@
 
 #include "glad/glad.h" //needs to be included prior to GLFW
 #include "GLFW/glfw3.h"
+#include <string>
+
+
+class JAGEWindow
+{
+public:
+    int width = 800;
+    int height = 600;
+    GLFWwindow* window;
+    std::string windowTitle = "Game Window";
+    JAGEWindow();
+    void processInput();
+    void getInput();
+    void terminate();
+private:
+    int realWidth = 0;
+    int realHeight = 0;
+};
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
-void processWindowInput(GLFWwindow* window);
+//void processWindowInput(GLFWwindow* window);
 
 #endif
