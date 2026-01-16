@@ -104,6 +104,9 @@ int main(int argc, const char * argv[]) {
     // Fragment Shader Uniform Variables
     //float greenValue;
     //int vertexColorLocation = glGetUniformLocation(shaderProgram2, "myColor");
+    float offset = 0;
+    
+    newShader.setFloat("offset", offset);
     
     while(!glfwWindowShouldClose(window))
     {
@@ -113,6 +116,11 @@ int main(int argc, const char * argv[]) {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
+        if(offset < 1)
+        {
+            offset += 0.001;
+            newShader.setFloat("offset", offset);
+        }
         newShader.use();
         
         glBindVertexArray(VAOs[0]);
