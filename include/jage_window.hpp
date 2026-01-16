@@ -20,12 +20,14 @@ class JAGEWindow
 public:
     int width = 800;
     int height = 600;
+    float scale = 1.0;
     GLFWwindow* window;
     std::string windowTitle = "Game Window";
     JAGEWindow();
     void processInput();
     void getInput();
     void terminate();
+    void resize(int newWidth, int newHeight);
 private:
     int realWidth = 0;
     int realHeight = 0;

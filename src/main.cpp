@@ -8,50 +8,13 @@
 #include "GLFW/glfw3.h"
 #include "jage_window.hpp"
 #include "jage_shaders.hpp"
+#include "stb_image/stb_image.h"
 #include <iostream>
 
 int main(int argc, const char * argv[]) {
 
 
-    /*
-    int width, height, realWidth, realHeight;
-    width = 800;
-    height = 600;
     
-    // @TODO: Move GLFW Window creation to window.cpp
-    // Create a GLFW window
-    glfwInit();
-    // Set the GLFW window to use OpenGL 3.3 with core profile
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    // Needed only for macOS
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    
-    GLFWwindow* window = glfwCreateWindow(width, height, "Learn OpenGL Tutorial", NULL, NULL);
-
-    if(!window)
-    {
-        std::cerr << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
-    
-    glfwMakeContextCurrent(window);
-    */
-    // Need to setup glad for OS-specific function pointers for OpenGL
-    JAGEWindow gameWindow;
-
-
-    // Next need to tell OpenGL the size of the rendering window
-    // Rendering window has issues with macOS DPI scaling, fixing by using glfwGetFrameBufferSize, rather than directly telling OpenGL to use 800 x 600
-    /*
-    glfwGetFramebufferSize(window, &realWidth, &realHeight);
-    glViewport(0, 0, realWidth, realHeight);
-    
-    // Used for resizing the window
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    */
     // Create two triangles
     float verticesLeftTri[] =
     {
@@ -67,12 +30,80 @@ int main(int argc, const char * argv[]) {
         1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f
     };
     
-    // TESTING NEW SHADER CLASS
+    // Creating a square for texture work
+    float squareVertices[] =
+    {
+        //X      Y     Z       R     G     B       Tx    Ty
+         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
+    };
+    
+    unsigned int squareIndices[] =
+    {
+      0, 1, 2,
+      0, 2, 3
+    };
+    
+    // Automatically creates a default 800 x 600 game window
+    JAGEWindow gameWindow;
+    gameWindow.resize(1920, 1200);
+    
     JAGEShader newShader("/Users/ben/Dev/JAGE/shaders/default.vs", "/Users/ben/Dev/JAGE/shaders/default.fs");
     newShader.use();
     
+    // ===== Adding in textures via stb_image =====
+    int imgWidth, imgHeight, nrChannels;
+    unsigned char *data = stbi_load("/Users/ben/Dev/JAGE/images/container.jpg", &imgWidth, &imgHeight, &nrChannels,     0);
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    if(data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imgWidth, imgHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cerr << "ERROR: Failed to load texture" << std::endl;
+    }
+    
+    stbi_image_free(data);
+    
+    
+    // ===== Create Element Array Object for square instead of triangle
+    unsigned int EBO, VAO, VBO;
+    //generate
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+    //bind
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER,VBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    //Give data
+    glBufferData(GL_ARRAY_BUFFER, sizeof(squareVertices), squareVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(squareIndices), squareIndices, GL_STATIC_DRAW);
+    //Tell how VAO works
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    
+    //newShader.setInt("ourTexture", texture);
+    
     // ===== Create Vertex Array Objects and Buffer Objects =====
     // Generate VBO and VAOs
+    /*
     unsigned int VAOs[2], VBOs[2];
     glGenVertexArrays(2, VAOs);
     glGenBuffers(2, VBOs);
@@ -104,7 +135,7 @@ int main(int argc, const char * argv[]) {
     float offset = 0;
     
     newShader.setFloat("offset", offset);
-    
+    */
     while(!glfwWindowShouldClose(gameWindow.window))
     {
         
@@ -113,22 +144,29 @@ int main(int argc, const char * argv[]) {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
+        /*
         if(offset < 1)
         {
             offset += 0.001;
             newShader.setFloat("offset", offset);
         }
+         */
         newShader.use();
         
-        glBindVertexArray(VAOs[0]);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        // Draw square via EBO
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        
+        //glBindVertexArray(VAOs[0]);
+        //glDrawArrays(GL_TRIANGLES, 0, 3);
         
         
         //glBindVertexArray(VAOs[1]);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glBindVertexArray(0);
-        
+                
         glfwSwapBuffers(gameWindow.window);
         //glfwPollEvents();
         gameWindow.getInput();
@@ -136,8 +174,8 @@ int main(int argc, const char * argv[]) {
     
     // Cleanly shut down
     // @TODO: Move all shutdown/terminate to a dedicated function
-    glDeleteVertexArrays(2, VAOs);
-    glDeleteBuffers(2, VBOs);
+    //glDeleteVertexArrays(2, VAOs);
+    //glDeleteBuffers(2, VBOs);
     //glDeleteProgram(shaderProgram);
     //glfwTerminate();
     gameWindow.terminate();

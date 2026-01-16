@@ -41,11 +41,18 @@ JAGEWindow::JAGEWindow()
     }
     
     // roundabout way of setting window size OpenGL is able to draw to due to macOS dpi scaling issues
+    
+ 
+    //This is a messy way of doing this but
+    glfwGetFramebufferSize(window, &realWidth, &realHeight);
+    scale = (float)width / (float)realWidth;
+    width = (int)(width * scale);
+    height = (int)(height * scale);
+    glfwSetWindowSize(window, width, height);
     glfwGetFramebufferSize(window, &realWidth, &realHeight);
     glViewport(0, 0, realWidth, realHeight);
     
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
     
 }
 
@@ -70,4 +77,18 @@ void JAGEWindow::getInput()
 void JAGEWindow::terminate()
 {
     glfwTerminate();
+}
+
+void JAGEWindow::resize(int newWidth, int newHeight)
+{
+    width = (int)(newWidth * scale);
+    height = (int)(newHeight * scale);
+    glfwSetWindowSize(window, width, height);
+    glfwGetFramebufferSize(window, &realWidth, &realHeight);
+    
+    //std::cout << "Requested Width: " << newWidth << ", Requested Height: " << newHeight << std::endl;
+    //std::cout << "Window Width: " << width << ", Window Height: " << height << std::endl;
+    //std::cout << "Real Width: " << realWidth << ", Real Height: " << realHeight << std::endl;
+
+    glViewport(0, 0, realWidth, realHeight);
 }
