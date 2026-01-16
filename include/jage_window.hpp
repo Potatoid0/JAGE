@@ -21,6 +21,7 @@ public:
     int width = 800;
     int height = 600;
     float scale = 1.0;
+    float tempOpac = 0.0;
     GLFWwindow* window;
     std::string windowTitle = "Game Window";
     JAGEWindow();

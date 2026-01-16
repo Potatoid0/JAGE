@@ -34,10 +34,10 @@ int main(int argc, const char * argv[]) {
     float squareVertices[] =
     {
         //X      Y     Z       R     G     B       Tx    Ty
-         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   2.0f, 2.0f, // top right
+         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   2.0f, 0.0f, // bottom right
         -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 2.0f  // top left
     };
     
     unsigned int squareIndices[] =
@@ -54,11 +54,12 @@ int main(int argc, const char * argv[]) {
     newShader.use();
     
     // ===== Adding in textures via stb_image =====
+    stbi_set_flip_vertically_on_load(true); // otherwise textures load upside down
     int imgWidth, imgHeight, nrChannels;
     unsigned char *data = stbi_load("/Users/ben/Dev/JAGE/images/container.jpg", &imgWidth, &imgHeight, &nrChannels,     0);
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    unsigned int textures[2];
+    glGenTextures(2, textures);
+    glBindTexture(GL_TEXTURE_2D, textures[0]);
     
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -72,11 +73,29 @@ int main(int argc, const char * argv[]) {
     }
     else
     {
-        std::cerr << "ERROR: Failed to load texture" << std::endl;
+        std::cerr << "ERROR: Failed to load first texture" << std::endl;
     }
-    
+    stbi_image_free(data);
+    data = stbi_load("/Users/ben/Dev/JAGE/images/awesomeface.png", &imgWidth, &imgHeight, &nrChannels, 0);
+    glBindTexture(GL_TEXTURE_2D, textures[1]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    if(data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imgWidth, imgHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cerr << "ERROR: Failed to load second texture" << std::endl;
+    }
     stbi_image_free(data);
     
+    //glUniform1i(glGetUniformLocation(newShader.ID, "ourTexture"), 0);
+    newShader.setInt("ourTexture", 0);
+    newShader.setInt("secondTexture", 1);
     
     // ===== Create Element Array Object for square instead of triangle
     unsigned int EBO, VAO, VBO;
@@ -136,11 +155,15 @@ int main(int argc, const char * argv[]) {
     
     newShader.setFloat("offset", offset);
     */
+    //float opacity = 0.0;
+    newShader.setFloat("opacity", gameWindow.tempOpac);
+    
     while(!glfwWindowShouldClose(gameWindow.window))
     {
         
        // processWindowInput(window);
         gameWindow.processInput();
+        newShader.setFloat("opacity", gameWindow.tempOpac);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
@@ -154,7 +177,12 @@ int main(int argc, const char * argv[]) {
         newShader.use();
         
         // Draw square via EBO
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textures[0]);
+        
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, textures[1]);
+        
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         

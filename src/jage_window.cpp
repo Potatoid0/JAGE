@@ -67,6 +67,16 @@ void JAGEWindow::processInput()
     {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
+    
+    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && tempOpac < 1.0)
+    {
+        tempOpac += 0.01;
+    }
+    
+    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && tempOpac > 0.0)
+    {
+        tempOpac -= 0.01;
+    }
 }
 
 void JAGEWindow::getInput()
