@@ -1,5 +1,5 @@
-#ifndef JAGE_SHADERS_H
-#define JAGE_SHADERS_H
+#ifndef JAGE_SHADERS_HPP
+#define JAGE_SHADERS_HPP
 
 //
 //  jage_shaders.hpp
@@ -21,7 +21,7 @@ public:
     unsigned int ID;
     
     // Constructor
-    JAGEShader(const char* vertexFile, const char* fragmentFile);
+    JAGEShader(const char* vertexPath, const char* fragmentPath);
     // use/activate the shader
     void use();
     // utility functions

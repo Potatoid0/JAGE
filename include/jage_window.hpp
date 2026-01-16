@@ -1,5 +1,5 @@
-#ifndef JAGE_WINDOW_H
-#define JAGE_WINDOW_H
+#ifndef JAGE_WINDOW_HPP
+#define JAGE_WINDOW_HPP
 
 //
 //  window.hpp
