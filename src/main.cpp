@@ -12,23 +12,6 @@
 #include <iostream>
 
 int main(int argc, const char * argv[]) {
-
-
-    
-    // Create two triangles
-    float verticesLeftTri[] =
-    {
-       -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 0.0f,
-       -1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f,
-        0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f
-    };
-    
-    float verticesRightTri[] =
-    {
-        0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 0.0f,
-        0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f,
-        1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f
-    };
     
     // Creating a square for texture work
     float squareVertices[] =
@@ -93,7 +76,6 @@ int main(int argc, const char * argv[]) {
     }
     stbi_image_free(data);
     
-    //glUniform1i(glGetUniformLocation(newShader.ID, "ourTexture"), 0);
     newShader.setInt("ourTexture", 0);
     newShader.setInt("secondTexture", 1);
     
@@ -118,44 +100,6 @@ int main(int argc, const char * argv[]) {
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
     
-    //newShader.setInt("ourTexture", texture);
-    
-    // ===== Create Vertex Array Objects and Buffer Objects =====
-    // Generate VBO and VAOs
-    /*
-    unsigned int VAOs[2], VBOs[2];
-    glGenVertexArrays(2, VAOs);
-    glGenBuffers(2, VBOs);
-    
-    // First triangle:
-    glBindVertexArray(VAOs[0]); //index 0, aka first triangle
-    glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]); //index 0, aka first triangle
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesLeftTri), verticesLeftTri, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    // Second Triangle:
-    glBindVertexArray(VAOs[1]);
-    glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesRightTri), verticesRightTri, GL_STATIC_DRAW);
-    //first param is offset which we only set to 0 because it's tightly packed, therefore OpenGL can figure it out
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-  
-    // Optionally set wireframe mode
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    
-    // Fragment Shader Uniform Variables
-    //float greenValue;
-    //int vertexColorLocation = glGetUniformLocation(shaderProgram2, "myColor");
-    float offset = 0;
-    
-    newShader.setFloat("offset", offset);
-    */
-    //float opacity = 0.0;
     newShader.setFloat("opacity", gameWindow.tempOpac);
     
     while(!glfwWindowShouldClose(gameWindow.window))
@@ -167,13 +111,6 @@ int main(int argc, const char * argv[]) {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
-        /*
-        if(offset < 1)
-        {
-            offset += 0.001;
-            newShader.setFloat("offset", offset);
-        }
-         */
         newShader.use();
         
         // Draw square via EBO
@@ -186,26 +123,18 @@ int main(int argc, const char * argv[]) {
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         
-        //glBindVertexArray(VAOs[0]);
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
-        
-        
-        //glBindVertexArray(VAOs[1]);
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
-
         glBindVertexArray(0);
                 
         glfwSwapBuffers(gameWindow.window);
-        //glfwPollEvents();
+
         gameWindow.getInput();
     }
     
     // Cleanly shut down
     // @TODO: Move all shutdown/terminate to a dedicated function
-    //glDeleteVertexArrays(2, VAOs);
-    //glDeleteBuffers(2, VBOs);
-    //glDeleteProgram(shaderProgram);
-    //glfwTerminate();
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
     gameWindow.terminate();
     
     return EXIT_SUCCESS;
