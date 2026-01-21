@@ -198,24 +198,33 @@ int main(int argc, const char * argv[]) {
     glm::mat4 projection = glm::mat4(1.0f);
     projection = glm::perspective(glm::radians(45.0f), (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
     
-    unsigned int modelLoc, viewLoc, projectionLoc;
-    modelLoc = glGetUniformLocation(newShader.ID, "model");
-    viewLoc = glGetUniformLocation(newShader.ID, "view");
-    projectionLoc = glGetUniformLocation(newShader.ID, "projection");
-    
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
+    newShader.setMat4("model", model);
+    newShader.setMat4("view", view);
+    newShader.setMat4("projection", projection);
 
     // Issues with clipping, need to enable depth testing
     glEnable(GL_DEPTH_TEST);
     
+    glm::vec3 cubePositions[] =
+    {
+        glm::vec3(0.0f,  4.0f,  -2.0f),
+        glm::vec3(3.0f,  -1.0f,  -7.0f),
+        glm::vec3(-4.0f,  2.0f,  -10.0f),
+        glm::vec3(1.2f,  -1.0f,  -6.0f),
+        glm::vec3(-3.1f,  0.8f,  -10.0f),
+        glm::vec3(6.2f,  -1.3f,  -14.0f),
+        glm::vec3(0.6f,  2.8f,  -8.0f),
+        glm::vec3(-0.9f,  3.0f,  -4.0f),
+        glm::vec3(9.3f,  -0.9f,  -2.0f),
+        glm::vec3(0.1f,  2.6f,  -8.0f)
+    };
+    
+    float FOV = 45;
     
     while(!glfwWindowShouldClose(gameWindow.window))
     {
         
-       // processWindowInput(window);
+        // processWindowInput(window);
         gameWindow.processInput();
         newShader.setFloat("opacity", gameWindow.tempOpac);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -227,9 +236,11 @@ int main(int argc, const char * argv[]) {
         //newTrans = glm::rotate(newTrans, (float)glfwGetTime(), glm::vec3(0.0, 0.0, 1.0));
         //newTrans = glm::scale(newTrans, glm::vec3(0.5, 0.5, 0.0));
         //glUniformMatrix4fv(transUniLoc, 1, GL_FALSE, glm::value_ptr(newTrans));
-
-        model = glm::rotate(model, glm::radians(0.5f), glm::vec3(0.5f, 1.0f, 0.0f));
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        
+        //model = glm::rotate(model, glm::radians(0.5f), glm::vec3(0.5f, 1.0f, 0.0f));
+        //glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        
+        
         newShader.use();
         
         // Draw square via EBO
@@ -240,8 +251,35 @@ int main(int argc, const char * argv[]) {
         glBindTexture(GL_TEXTURE_2D, textures[1]);
         
         glBindVertexArray(cubeVAO);
+        
+        if(FOV < 100)
+        {
+            FOV += 0.01;
+            projection = glm::perspective(glm::radians(FOV), (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
+            //glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+            newShader.setMat4("projection", projection);
+        }
+        else
+        {
+            FOV = 10;
+            projection = glm::perspective(glm::radians(FOV), (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
+            //glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+            newShader.setMat4("projection", projection);
+
+        }
+        
+        for(unsigned int i=0; i<10; i++)
+        {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            newShader.setMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+            
+        }
+        
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
                 
         glfwSwapBuffers(gameWindow.window);
