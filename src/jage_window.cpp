@@ -11,6 +11,11 @@
 #include "jage_window.hpp"
 
 
+/*
+ * @brief Creates a GLFW-based JAGEWindow object
+ * @note Defaults screen size to 960x540
+ * @note Currently has an issue with mac dpi scaling with window size
+ */
 JAGEWindow::JAGEWindow()
 {
     glfwInit();
@@ -64,7 +69,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void JAGEWindow::processInput()
 {
-    const float cameraSpeed = 0.05f;
+    //const float cameraSpeed = 0.05f;
     
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
@@ -110,7 +115,7 @@ void JAGEWindow::resize(int newWidth, int newHeight)
 
     glViewport(0, 0, width, height);
 }
-
+/*
 int JAGEWindow::getHeight()
 {
     return height;
@@ -120,3 +125,4 @@ int JAGEWindow::getWidth()
 {
     return width;
 }
+*/
