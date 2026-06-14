@@ -57,8 +57,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     
     glm::vec3 direction;
     direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    direction.z = sin(glm::radians(yaw));
-    direction.y = sin(glm::radians(pitch)) * cos(glm::radians(pitch));
+    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    direction.y = sin(glm::radians(pitch));
     cameraFront = glm::normalize(direction);
 }
 
@@ -153,7 +153,7 @@ int main(int argc, const char * argv[]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_REPEAT);
     
     if(data)
     {
@@ -170,7 +170,7 @@ int main(int argc, const char * argv[]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_REPEAT);
     if(data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imgWidth, imgHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
@@ -287,7 +287,7 @@ int main(int argc, const char * argv[]) {
         glm::vec3(0.1f,  2.6f,  -8.0f)
     };
     
-    float cameraSpeed = 2.0f;
+    float cameraSpeed = 3.0f;
     uint16_t loopIterations = 0;
     
     // ===== Actual Game Loop =====
@@ -318,12 +318,16 @@ int main(int argc, const char * argv[]) {
         if (glfwGetKey(gameWindow.window, GLFW_KEY_W) == GLFW_PRESS)
         {
             // Move forward
-            cameraPos += cameraSpeed * cameraFront;
+            //cameraPos += cameraSpeed * cameraFront;
+            cameraPos.x += cameraSpeed * cameraFront.x;
+            cameraPos.z += cameraSpeed * cameraFront.z;
         }
         if (glfwGetKey(gameWindow.window, GLFW_KEY_S) == GLFW_PRESS)
         {
             // Move backwards
-            cameraPos -= cameraSpeed * cameraFront;
+            //cameraPos -= cameraSpeed * cameraFront;
+            cameraPos.x -= cameraSpeed * cameraFront.x;
+            cameraPos.z -= cameraSpeed * cameraFront.z;
         }
         if (glfwGetKey(gameWindow.window, GLFW_KEY_A) == GLFW_PRESS)
         {
@@ -334,6 +338,14 @@ int main(int argc, const char * argv[]) {
         {
             // Strafe right
             cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        }
+        if (glfwGetKey(gameWindow.window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        {
+            cameraPos += (cameraSpeed/2) * cameraUp;
+        }
+        if (glfwGetKey(gameWindow.window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+        {
+            cameraPos -= (cameraSpeed/2) * cameraUp;
         }
         if (glfwGetKey(gameWindow.window, GLFW_KEY_X) == GLFW_PRESS)
         {
@@ -409,6 +421,12 @@ int main(int argc, const char * argv[]) {
             glDrawArrays(GL_TRIANGLES, 0, 36);
             
         }
+        //Trying to make a floor
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::scale(model, glm::vec3(1000.0f, 1.0f, 1000.0f));
+        model = glm::translate(model, glm::vec3(0.0f, -1.5f, 0.0f));
+        newShader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
         
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
