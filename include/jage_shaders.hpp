@@ -19,9 +19,11 @@
 
 class JAGEShader
 {
+private:
+    unsigned int ID;
 public:
     // the program ID
-    unsigned int ID;
+    //unsigned int ID;
     
     // Constructor
     JAGEShader(const char* vertexPath, const char* fragmentPath);
