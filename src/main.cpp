@@ -77,11 +77,19 @@ int main(int argc, const char * argv[]) {
       0, 2, 3
     };
     
-    // Automatically creates a default 800 x 600 game window
-    int screenWidth = 1920;
-    int screenHeight = 1200;
+    // Automatically creates a default 1920 x 1080 game window
+    //int screenWidth = 1920;
+    //int screenHeight = 1080;
     JAGEWindow gameWindow;
-    gameWindow.resize(screenWidth, screenHeight);
+    //gameWindow.resize(1920, 1080);
+    //@TODO: Figure this out because mac dpi scaling is gross
+    //std::cout << "gameWindow.width: " << gameWindow.width << std::endl;
+    //std::cout << "gameWindow.height: " << gameWindow.height << std::endl;
+
+    //std::cout << "gameWindow.realWidth: " << gameWindow.realWidth << std::endl;
+    //std::cout << "gameWindow.realHeight: " << gameWindow.realHeight << std::endl;
+
+    //gameWindow.resize(screenWidth, screenHeight);
     
     JAGEShader newShader("/Users/ben/Dev/JAGE/shaders/default.vs", "/Users/ben/Dev/JAGE/shaders/default.fs");
     newShader.use();
@@ -196,7 +204,7 @@ int main(int argc, const char * argv[]) {
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
     
     glm::mat4 projection = glm::mat4(1.0f);
-    projection = glm::perspective(glm::radians(45.0f), (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(45.0f), (float)gameWindow.getWidth()/(float)gameWindow.getHeight(), 0.1f, 100.0f);
     
     newShader.setMat4("model", model);
     newShader.setMat4("view", view);
@@ -255,14 +263,14 @@ int main(int argc, const char * argv[]) {
         if(FOV < 100)
         {
             FOV += 0.01;
-            projection = glm::perspective(glm::radians(FOV), (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
+            projection = glm::perspective(glm::radians(FOV), (float)gameWindow.getWidth()/(float)gameWindow.getHeight(), 0.1f, 100.0f);
             //glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
             newShader.setMat4("projection", projection);
         }
         else
         {
             FOV = 10;
-            projection = glm::perspective(glm::radians(FOV), (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
+            projection = glm::perspective(glm::radians(FOV), (float)gameWindow.getWidth()/(float)gameWindow.getHeight(), 0.1f, 100.0f);
             //glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
             newShader.setMat4("projection", projection);
 
