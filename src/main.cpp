@@ -14,6 +14,10 @@
 #include "glm/gtc/type_ptr.hpp"
 #include <iostream>
 
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
+float currentFrame = 0.0f;
+
 int main(int argc, const char * argv[]) {
     
     // Creating a square for texture work
@@ -178,7 +182,7 @@ int main(int argc, const char * argv[]) {
     glm::mat4 trans = glm::mat4(1.0f);                          // create identity matrix prior to transformations
     trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f)); // apply desired translation to identity matrix
     vec = trans * vec;                                          // apply the new translation matrix to vector
-    std::cout << vec.x << vec.y << vec.z << std::endl;          // output new vector
+    //std::cout << vec.x << vec.y << vec.z << std::endl;          // output new vector
     // Saving above for reference for now
     
     // Modifying existing code, scaling and rotating the existing square
@@ -197,11 +201,24 @@ int main(int argc, const char * argv[]) {
     //glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)width/(float)height, 0.1f, 100.0f);
     
     // Actual 3D stuff now:
+    
+    // Testing Camera
+    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f); // point at scene origin
+    glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget); //subtracting origin from current position results in the desired direction
+    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection)); //dot product between up and target direction gives perpendicular to both, resulting in the positive x axis
+    glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight); // similar to above
+    // This is the Gram-Schmidt process if I want to do some studying up on linear algebra
+    
     glm::mat4 model = glm::mat4(1.0f);
     //model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     
-    glm::mat4 view = glm::mat4(1.0f);
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    glm::mat4 view = glm::lookAt(cameraPos, cameraTarget, up); // same as previously entered
+    //view = glm::translate(view, glm::vec3(0.0f, 0.0f, 3.0f));
+    
+     
     
     glm::mat4 projection = glm::mat4(1.0f);
     projection = glm::perspective(glm::radians(45.0f), (float)gameWindow.getWidth()/(float)gameWindow.getHeight(), 0.1f, 100.0f);
@@ -227,13 +244,74 @@ int main(int argc, const char * argv[]) {
         glm::vec3(0.1f,  2.6f,  -8.0f)
     };
     
-    float FOV = 45;
+    //float FOV = 45;
+    
+    
+    float cameraSpeed;
+    
+    int loopIterations = 0;
+    
+    // ===== Actual Game Loop =====
     
     while(!glfwWindowShouldClose(gameWindow.window))
     {
         
-        // processWindowInput(window);
+        // Setting up frame timing to get controls irellevent of frame/processing times
+        loopIterations++;
+        //std::cout << "Game Loops: " << loopIterations << std::endl;
+        
+        currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        cameraSpeed = 3.0f * deltaTime;
+        
+        if ( static_cast<int>(currentFrame) > static_cast<int>(lastFrame) )
+        {
+            //std::cout << "One second has passed I think" << std::endl;
+            std::cout << "FPS: " << loopIterations << std::endl;
+            loopIterations = 0;
+        }
+        
+        lastFrame = currentFrame;
+
+        //std::cout << "Delta Time: " << deltaTime << std::endl;
+        //std::cout << "Application Run Time: " << currentFrame << std::endl;
+        
         gameWindow.processInput();
+        
+        // temp controls, need to move to input handler
+        
+        if (glfwGetKey(gameWindow.window, GLFW_KEY_W) == GLFW_PRESS)
+        {
+            // Move forward
+            cameraPos += cameraSpeed * cameraFront;
+        }
+        if (glfwGetKey(gameWindow.window, GLFW_KEY_S) == GLFW_PRESS)
+        {
+            // Move backwards
+            cameraPos -= cameraSpeed * cameraFront;
+        }
+        if (glfwGetKey(gameWindow.window, GLFW_KEY_A) == GLFW_PRESS)
+        {
+            // Strafe leftq
+            cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        }
+        if (glfwGetKey(gameWindow.window, GLFW_KEY_D) == GLFW_PRESS)
+        {
+            // Strafe right
+            cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        }
+        
+        // Strafe left
+        // create vector perpendicular to up and forward via cross product, normalize it, scale by speed(?)
+        //cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        
+        // Strafe right
+        //cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        
+        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        newShader.setMat4("view", view);
+
+        
         newShader.setFloat("opacity", gameWindow.tempOpac);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // include depth buffer bit so it doesn't include previous frames
@@ -260,6 +338,7 @@ int main(int argc, const char * argv[]) {
         
         glBindVertexArray(cubeVAO);
         
+        /*
         if(FOV < 100)
         {
             FOV += 0.01;
@@ -275,7 +354,8 @@ int main(int argc, const char * argv[]) {
             newShader.setMat4("projection", projection);
 
         }
-        
+        */
+        // This is probably horrendous for performance given the creation of 10 cube models every iteration
         for(unsigned int i=0; i<10; i++)
         {
             glm::mat4 model = glm::mat4(1.0f);

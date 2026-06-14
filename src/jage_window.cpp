@@ -64,6 +64,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void JAGEWindow::processInput()
 {
+    const float cameraSpeed = 0.05f;
+    
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
@@ -77,6 +79,7 @@ void JAGEWindow::processInput()
     if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && tempOpac > 0.0)
     {
         tempOpac -= 0.01;
+        
     }
 }
 
