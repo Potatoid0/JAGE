@@ -13,10 +13,54 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 float currentFrame = 0.0f;
+//temp func
+//temp global variables for camera control
+float lastX = 480;
+float lastY = 270;
+float yaw = -90.0f;
+float pitch = 0.0f;
+bool firstMouse = true;
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f); // point at scene origin
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+    
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos;
+    lastX = xpos;
+    lastY = ypos;
+    
+    const float sensitivity = 0.1f;
+    
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+    
+    yaw += xoffset;
+    pitch += yoffset;
+    
+    if (pitch > 89.0f) { pitch = 89.0f; }
+    if (pitch < -89.0f) { pitch = -89.0f; }
+    
+    glm::vec3 direction;
+    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    direction.y = sin(glm::radians(pitch));
+    cameraFront = glm::normalize(direction);
+}
 
 int main(int argc, const char * argv[]) {
     
@@ -109,7 +153,7 @@ int main(int argc, const char * argv[]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_REPEAT);
     
     if(data)
     {
@@ -126,7 +170,7 @@ int main(int argc, const char * argv[]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_REPEAT);
     if(data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imgWidth, imgHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
@@ -203,9 +247,7 @@ int main(int argc, const char * argv[]) {
     // Actual 3D stuff now:
     
     // Testing Camera
-    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f); // point at scene origin
+    
     glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget); //subtracting origin from current position results in the desired direction
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection)); //dot product between up and target direction gives perpendicular to both, resulting in the positive x axis
@@ -218,7 +260,8 @@ int main(int argc, const char * argv[]) {
     glm::mat4 view = glm::lookAt(cameraPos, cameraTarget, up); // same as previously entered
     //view = glm::translate(view, glm::vec3(0.0f, 0.0f, 3.0f));
     
-     
+    // Direction math to look around
+    
     
     glm::mat4 projection = glm::mat4(1.0f);
     projection = glm::perspective(glm::radians(45.0f), (float)gameWindow.getWidth()/(float)gameWindow.getHeight(), 0.1f, 100.0f);
@@ -244,37 +287,29 @@ int main(int argc, const char * argv[]) {
         glm::vec3(0.1f,  2.6f,  -8.0f)
     };
     
-    //float FOV = 45;
-    
-    
-    float cameraSpeed;
-    
-    int loopIterations = 0;
+    float cameraSpeed = 3.0f;
+    uint16_t loopIterations = 0;
     
     // ===== Actual Game Loop =====
     
     while(!glfwWindowShouldClose(gameWindow.window))
     {
-        
         // Setting up frame timing to get controls irellevent of frame/processing times
         loopIterations++;
         //std::cout << "Game Loops: " << loopIterations << std::endl;
-        
         currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
+               
         cameraSpeed = 3.0f * deltaTime;
-        
         if ( static_cast<int>(currentFrame) > static_cast<int>(lastFrame) )
         {
             //std::cout << "One second has passed I think" << std::endl;
             std::cout << "FPS: " << loopIterations << std::endl;
+            //std::cout << "Cumulative Delta: " << cumulativeDelta << std::endl;
             loopIterations = 0;
         }
         
         lastFrame = currentFrame;
-
-        //std::cout << "Delta Time: " << deltaTime << std::endl;
-        //std::cout << "Application Run Time: " << currentFrame << std::endl;
         
         gameWindow.processInput();
         
@@ -283,12 +318,16 @@ int main(int argc, const char * argv[]) {
         if (glfwGetKey(gameWindow.window, GLFW_KEY_W) == GLFW_PRESS)
         {
             // Move forward
-            cameraPos += cameraSpeed * cameraFront;
+            //cameraPos += cameraSpeed * cameraFront;
+            cameraPos.x += cameraSpeed * cameraFront.x;
+            cameraPos.z += cameraSpeed * cameraFront.z;
         }
         if (glfwGetKey(gameWindow.window, GLFW_KEY_S) == GLFW_PRESS)
         {
             // Move backwards
-            cameraPos -= cameraSpeed * cameraFront;
+            //cameraPos -= cameraSpeed * cameraFront;
+            cameraPos.x -= cameraSpeed * cameraFront.x;
+            cameraPos.z -= cameraSpeed * cameraFront.z;
         }
         if (glfwGetKey(gameWindow.window, GLFW_KEY_A) == GLFW_PRESS)
         {
@@ -300,7 +339,23 @@ int main(int argc, const char * argv[]) {
             // Strafe right
             cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
         }
-        
+        if (glfwGetKey(gameWindow.window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        {
+            cameraPos += (cameraSpeed/2) * cameraUp;
+        }
+        if (glfwGetKey(gameWindow.window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+        {
+            cameraPos -= (cameraSpeed/2) * cameraUp;
+        }
+        if (glfwGetKey(gameWindow.window, GLFW_KEY_X) == GLFW_PRESS)
+        {
+            //using x to initiate mouse lookaround
+            glfwSetInputMode(gameWindow.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            glfwSetCursorPosCallback(gameWindow.window, mouse_callback);
+
+          
+        }
+
         // Strafe left
         // create vector perpendicular to up and forward via cross product, normalize it, scale by speed(?)
         //cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
@@ -366,6 +421,12 @@ int main(int argc, const char * argv[]) {
             glDrawArrays(GL_TRIANGLES, 0, 36);
             
         }
+        //Trying to make a floor
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::scale(model, glm::vec3(1000.0f, 1.0f, 1000.0f));
+        model = glm::translate(model, glm::vec3(0.0f, -1.5f, 0.0f));
+        newShader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
         
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
@@ -373,6 +434,10 @@ int main(int argc, const char * argv[]) {
         glfwSwapBuffers(gameWindow.window);
 
         gameWindow.getInput();
+        
+        
+        
+        
     }
     
     // Cleanly shut down
@@ -384,3 +449,5 @@ int main(int argc, const char * argv[]) {
     
     return EXIT_SUCCESS;
 }
+
+

@@ -18,8 +18,8 @@
 class JAGEWindow
 {
 private:
-    int width = 1920;
-    int height = 1080;
+    int width = 960;
+    int height = 540;
     float scale = 1.0;
     std::string windowTitle = "Game Window";
     
@@ -33,8 +33,12 @@ public:
     void getInput();
     void terminate();
     void resize(int newWidth, int newHeight);
-    int getHeight();
-    int getWidth();
+    uint16_t getHeight() const { return height; }
+    uint16_t getWidth() const { return width; }
+    
+    //int getHeight();
+    //int getWidth();
+    
 };
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
