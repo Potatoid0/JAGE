@@ -6,6 +6,7 @@
 //
 #include "glad/glad.h" //needs to be included prior to GLFW
 #include "GLFW/glfw3.h"
+#include "jage_core.hpp"
 #include "jage_window.hpp"
 #include "jage_shaders.hpp"
 #include "stb_image/stb_image.h"
@@ -128,7 +129,9 @@ int main(int argc, const char * argv[]) {
     // Automatically creates a default 1920 x 1080 game window
     //int screenWidth = 1920;
     //int screenHeight = 1080;
-    JAGEWindow gameWindow;
+    //JAGEWindow gameWindow;
+    
+    JAGE::Window gameWindow;
     //gameWindow.resize(1920, 1080);
     //@TODO: Figure this out because mac dpi scaling is gross
     //std::cout << "gameWindow.width: " << gameWindow.width << std::endl;
@@ -219,7 +222,7 @@ int main(int argc, const char * argv[]) {
     
     
     
-    newShader.setFloat("opacity", gameWindow.tempOpac);
+    //newShader.setFloat("opacity", gameWindow.tempOpac);
     
     // ===== Adding 3D elements =====
     glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);                      // create vector of 1,0,0
@@ -311,7 +314,7 @@ int main(int argc, const char * argv[]) {
         
         lastFrame = currentFrame;
         
-        gameWindow.processInput();
+        //gameWindow.processInput();
         
         // temp controls, need to move to input handler
         
@@ -367,7 +370,7 @@ int main(int argc, const char * argv[]) {
         newShader.setMat4("view", view);
 
         
-        newShader.setFloat("opacity", gameWindow.tempOpac);
+        //newShader.setFloat("opacity", gameWindow.tempOpac);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // include depth buffer bit so it doesn't include previous frames
         
@@ -445,7 +448,7 @@ int main(int argc, const char * argv[]) {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
-    gameWindow.terminate();
+    //gameWindow.terminate();
     
     return EXIT_SUCCESS;
 }

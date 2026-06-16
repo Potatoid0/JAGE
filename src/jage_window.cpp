@@ -10,6 +10,47 @@
 #include <iostream>
 #include "jage_window.hpp"
 
+namespace JAGE
+{
+    Window::Window()
+    {
+        std::cout << "INFO: Attempting to create game window" << std::endl;
+        
+        // Initial glfw initialization
+        glfwInit();
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        
+        // macOS-specific flag(?)
+#ifdef __APPLE__
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+        
+        window = glfwCreateWindow(width, height, title, NULL, NULL);
+        
+        if(!window)
+        {
+            std::cerr << "ERROR: Failed to create main game window" << std::endl;
+            glfwTerminate();
+            exit(EXIT_FAILURE);
+        }
+        
+        glfwMakeContextCurrent(window);
+        
+        // Initialize GLAD for OS-specific function pointers
+        if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        {
+            std::cerr << "ERROR: Failed to initialize GLAD" << std::endl;
+        }
+        
+        glfwGetFramebufferSize(window, &width, &height);
+        glViewport(0, 0, width, height);
+        
+        glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    }
+
+}
 
 /*
  * @brief Creates a GLFW-based JAGEWindow object
@@ -30,7 +71,7 @@ JAGEWindow::JAGEWindow()
     window = glfwCreateWindow(width, height, windowTitle.c_str(), NULL, NULL);
     if(!window)
     {
-        std::cerr << "ERROR: Failed to create main game window" << std::endl;
+        std::cerr << "JAGEERROR: Failed to create main game window" << std::endl;
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
@@ -40,7 +81,7 @@ JAGEWindow::JAGEWindow()
     // Initialize GLAD for OS-specific function pointers
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        std::cerr << "Failed to initialize GLAD" << std::endl;
+        std::cerr << "JAGEERROR: Failed to initialize GLAD" << std::endl;
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
