@@ -57,6 +57,7 @@ namespace JAGE
  * @note Defaults screen size to 960x540
  * @note Currently has an issue with mac dpi scaling with window size
  */
+/*
 JAGEWindow::JAGEWindow()
 {
     glfwInit();
@@ -102,12 +103,12 @@ JAGEWindow::JAGEWindow()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     
 }
-
+*/
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
-
+/*
 void JAGEWindow::processInput()
 {
     //const float cameraSpeed = 0.05f;
@@ -128,7 +129,8 @@ void JAGEWindow::processInput()
         
     }
 }
-
+*/
+/*
 void JAGEWindow::getInput()
 {
     glfwPollEvents();
@@ -156,6 +158,7 @@ void JAGEWindow::resize(int newWidth, int newHeight)
 
     glViewport(0, 0, width, height);
 }
+ */
 /*
 int JAGEWindow::getHeight()
 {

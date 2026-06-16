@@ -37,7 +37,7 @@ namespace JAGE
         
     };
 }
-
+/*
 class JAGEWindow
 {
 private:
@@ -63,7 +63,7 @@ public:
     //int getWidth();
     
 };
-
+*/
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 //void processWindowInput(GLFWwindow* window);
