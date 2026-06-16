@@ -12,29 +12,33 @@
 
 //#include "glad/glad.h" //needs to be included prior to GLFW
 #include "GLFW/glfw3.h"
-#include <string>
-#include "jage_core.hpp"
+//#include <string>
+//#include "jage_core.hpp"
+#include <functional>
+#include "jage_event.hpp"
 
 
 namespace JAGE
 {
     class Window
     {
+    
+    public:
+        using EventCallbackFn = std::function<void(Event&)>;
+        void SetEventCallback(const EventCallbackFn& callback) { m_Callback = callback; }
+        GLFWwindow* window;
+        //void Initialize();
+        //void terminate();
+        Window();
+        static void getInput() { glfwPollEvents(); }
+        uint16_t getHeight() const { return height; }
+        uint16_t getWidth() const { return width; }
         
     private:
         int width = 960;
         int height = 540;
         const char* title = "JAGE"; // c style string as used by GLFW to save a conversion later
-    
-    public:
-        GLFWwindow* window;
-        //void Initialize();
-        //void terminate();
-        Window();
-        void getInput() { glfwPollEvents(); }
-        uint16_t getHeight() const { return height; }
-        uint16_t getWidth() const { return width; }
-        
+        EventCallbackFn m_Callback;
     };
 }
 /*

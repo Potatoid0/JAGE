@@ -52,6 +52,15 @@ namespace JAGE
 
 }
 
+glfwSetKeyCallback(m_Window, [](GLFWwindow* glfwWin, int key, int scancode, int action, int mods) {
+    Window& window = *(Window*)glfwGetWindowUserPointer(glfwWin);
+    
+    if (action == GLFW_PRESS) {
+        KeyPressEvent event(key);
+        window.m_Callback(event); // Yell it out to whoever is listening!
+    }
+});
+
 /*
  * @brief Creates a GLFW-based JAGEWindow object
  * @note Defaults screen size to 960x540
@@ -108,6 +117,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
+
+
 /*
 void JAGEWindow::processInput()
 {

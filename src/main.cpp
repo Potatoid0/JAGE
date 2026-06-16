@@ -314,10 +314,12 @@ int main(int argc, const char * argv[]) {
         
         lastFrame = currentFrame;
         
+        JAGE::Window::getInput();
+        
         //gameWindow.processInput();
         
         // temp controls, need to move to input handler
-        
+        /*
         if (glfwGetKey(gameWindow.window, GLFW_KEY_W) == GLFW_PRESS)
         {
             // Move forward
@@ -368,7 +370,7 @@ int main(int argc, const char * argv[]) {
         
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         newShader.setMat4("view", view);
-
+         */
         
         //newShader.setFloat("opacity", gameWindow.tempOpac);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);

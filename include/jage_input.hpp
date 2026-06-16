@@ -1,6 +1,7 @@
 #ifndef JAGE_INPUT_HPP
 #define JAGE_INPUT_HPP
 
+#include "jage_event.hpp"
 
 namespace JAGE
 {
@@ -14,6 +15,8 @@ namespace JAGE
         
         static void UpdateKeyState(int key, bool isPressed) { s_KeyStates[key] = isPressed; }
         static bool IsKeyPressed(int key) { return s_KeyStates[key]; }
+        static void OnEvent(Event& e);
+
         
     };
 }
