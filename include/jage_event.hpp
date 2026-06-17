@@ -4,7 +4,7 @@
 
 namespace JAGE
 {
-    enum class EventType { KeyPress, KeyRelease, MouseMove };
+    enum class EventType { KeyPress, KeyRelease, MouseMove, WindowClose };
 
     class Event
     {

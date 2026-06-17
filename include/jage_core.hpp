@@ -6,6 +6,7 @@
 #include "jage_shaders.hpp"
 #include "jage_keys.hpp"
 #include "jage_event.hpp"
+#include "jage_application.hpp"
 
 namespace JAGE
 {

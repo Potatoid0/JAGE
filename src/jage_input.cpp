@@ -6,12 +6,12 @@
 //
 
 #include "jage_input.hpp"
-
+#include <iostream>
 void JAGE::Input::OnEvent(Event& e)
 {
     if(e.GetType() == EventType::KeyPress)
     {
         auto& keyEvent = static_cast<KeyPressEvent&>(e);
-        s_KeyStates[keyEvent.GetKey()] = true;
+        UpdateKeyState(keyEvent.GetKey(), true);
     }
 }

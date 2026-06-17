@@ -11,7 +11,7 @@ namespace JAGE::Key
     S       = 83,
     D       = 68,
     X       = 88,
-    ESCAPE  = 27,
+    ESCAPE  = 256,
     SPACE   = 32,
     LEFT_CONTROL = 341
     };

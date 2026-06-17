@@ -12,7 +12,8 @@
 
 namespace JAGE
 {
-    Window::Window()
+  
+    void Window::Initialize(int width, int height, const std::string& title)
     {
         std::cout << "INFO: Attempting to create game window" << std::endl;
         
@@ -27,16 +28,29 @@ namespace JAGE
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
         
-        window = glfwCreateWindow(width, height, title, NULL, NULL);
+        m_Window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+        glfwSetWindowUserPointer(m_Window, this);
+        glfwSetKeyCallback(m_Window, [](GLFWwindow* glfwWindow, int key, int scancode, int action, int mods)
+            {
+                // Retrieve the pointer back out of the GLFW window
+                Window* ptr = (Window*)glfwGetWindowUserPointer(glfwWindow);
+                
+                // Now use 'ptr' to access your class members or call the callback
+                if (ptr->m_Callback)
+                {
+                    KeyPressEvent event(key);
+                    ptr->m_Callback(event);
+                }
+            });
         
-        if(!window)
+        if(!m_Window)
         {
             std::cerr << "ERROR: Failed to create main game window" << std::endl;
             glfwTerminate();
             exit(EXIT_FAILURE);
         }
         
-        glfwMakeContextCurrent(window);
+        glfwMakeContextCurrent(m_Window);
         
         // Initialize GLAD for OS-specific function pointers
         if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -44,22 +58,15 @@ namespace JAGE
             std::cerr << "ERROR: Failed to initialize GLAD" << std::endl;
         }
         
-        glfwGetFramebufferSize(window, &width, &height);
-        glViewport(0, 0, width, height);
+        glfwGetFramebufferSize(m_Window, &m_Width, &m_Height);
+        glViewport(0, 0, m_Width, m_Height);
         
-        glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+        glfwSetFramebufferSizeCallback(m_Window, framebuffer_size_callback);
     }
 
 }
 
-glfwSetKeyCallback(m_Window, [](GLFWwindow* glfwWin, int key, int scancode, int action, int mods) {
-    Window& window = *(Window*)glfwGetWindowUserPointer(glfwWin);
-    
-    if (action == GLFW_PRESS) {
-        KeyPressEvent event(key);
-        window.m_Callback(event); // Yell it out to whoever is listening!
-    }
-});
+
 
 /*
  * @brief Creates a GLFW-based JAGEWindow object

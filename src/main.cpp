@@ -17,6 +17,26 @@
 #include <thread>
 #include <chrono>
 
+
+namespace JAGE
+{
+    class TestApp : public Application
+    {
+    public:
+        void OnInitialize() override { std::cout << "[TestApp]: Attempting to Initialize" << std::endl; }
+        void OnUpdate(float deltaTime) override
+        {
+            //std::cout << "[TestApp] is updating" << std::endl;
+            if (Input::IsKeyPressed(Key::ESCAPE))
+            {
+                Close();
+            }
+        }
+    };
+}
+
+/*
+
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 float currentFrame = 0.0f;
@@ -62,9 +82,15 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     direction.y = sin(glm::radians(pitch));
     cameraFront = glm::normalize(direction);
 }
-
+*/
 int main(int argc, const char * argv[]) {
     
+    JAGE::TestApp app;
+    app.Run();
+    
+    return 0;
+}
+/*
     // Creating a square for texture work
     float squareVertices[] =
     {
@@ -130,7 +156,6 @@ int main(int argc, const char * argv[]) {
     //int screenWidth = 1920;
     //int screenHeight = 1080;
     //JAGEWindow gameWindow;
-    
     JAGE::Window gameWindow;
     //gameWindow.resize(1920, 1080);
     //@TODO: Figure this out because mac dpi scaling is gross
@@ -267,7 +292,7 @@ int main(int argc, const char * argv[]) {
     
     
     glm::mat4 projection = glm::mat4(1.0f);
-    projection = glm::perspective(glm::radians(45.0f), (float)gameWindow.getWidth()/(float)gameWindow.getHeight(), 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(45.0f), (float)gameWindow.GetWidth()/(float)gameWindow.GetHeight(), 0.1f, 100.0f);
     
     newShader.setMat4("model", model);
     newShader.setMat4("view", view);
@@ -307,19 +332,19 @@ int main(int argc, const char * argv[]) {
         if ( static_cast<int>(currentFrame) > static_cast<int>(lastFrame) )
         {
             //std::cout << "One second has passed I think" << std::endl;
-            std::cout << "FPS: " << loopIterations << std::endl;
+            //std::cout << "FPS: " << loopIterations << std::endl;
             //std::cout << "Cumulative Delta: " << cumulativeDelta << std::endl;
             loopIterations = 0;
         }
         
         lastFrame = currentFrame;
         
-        JAGE::Window::getInput();
+        JAGE::Window::PollEvents();
         
         //gameWindow.processInput();
         
         // temp controls, need to move to input handler
-        /*
+        
         if (glfwGetKey(gameWindow.window, GLFW_KEY_W) == GLFW_PRESS)
         {
             // Move forward
@@ -370,7 +395,7 @@ int main(int argc, const char * argv[]) {
         
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         newShader.setMat4("view", view);
-         */
+         
         
         //newShader.setFloat("opacity", gameWindow.tempOpac);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -398,7 +423,7 @@ int main(int argc, const char * argv[]) {
         
         glBindVertexArray(cubeVAO);
         
-        /*
+        
         if(FOV < 100)
         {
             FOV += 0.01;
@@ -414,7 +439,7 @@ int main(int argc, const char * argv[]) {
             newShader.setMat4("projection", projection);
 
         }
-        */
+        
         // This is probably horrendous for performance given the creation of 10 cube models every iteration
         for(unsigned int i=0; i<10; i++)
         {
@@ -438,7 +463,7 @@ int main(int argc, const char * argv[]) {
                 
         glfwSwapBuffers(gameWindow.window);
 
-        gameWindow.getInput();
+        gameWindow.PollEvents();
         
         
         
@@ -456,3 +481,4 @@ int main(int argc, const char * argv[]) {
 }
 
 
+*/

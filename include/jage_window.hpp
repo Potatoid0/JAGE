@@ -26,19 +26,22 @@ namespace JAGE
     public:
         using EventCallbackFn = std::function<void(Event&)>;
         void SetEventCallback(const EventCallbackFn& callback) { m_Callback = callback; }
-        GLFWwindow* window;
+        void Initialize(int width, int height, const std::string& title);
         //void Initialize();
         //void terminate();
-        Window();
-        static void getInput() { glfwPollEvents(); }
-        uint16_t getHeight() const { return height; }
-        uint16_t getWidth() const { return width; }
+        Window() : m_Window(nullptr), m_Width(0), m_Height(0) {}
+        void PollEvents() { glfwPollEvents(); }
+        void SwapBuffers() { glfwSwapBuffers(m_Window); }
+        int GetHeight() const { return m_Height; }
+        int GetWidth() const { return m_Width; }
         
     private:
-        int width = 960;
-        int height = 540;
-        const char* title = "JAGE"; // c style string as used by GLFW to save a conversion later
+        int m_Width = 960;
+        int m_Height = 540;
+        const char* m_Title = "JAGE"; // c style string as used by GLFW to save a conversion later
         EventCallbackFn m_Callback;
+        GLFWwindow* m_Window;
+
     };
 }
 /*
