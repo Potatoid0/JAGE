@@ -26,6 +26,8 @@ namespace JAGE
         void OnInitialize() override { std::cout << "[TestApp]: Attempting to Initialize" << std::endl; }
         void OnUpdate(float deltaTime) override
         {
+            glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // include depth buffer bit so it doesn't include previous frames
             //std::cout << "[TestApp] is updating" << std::endl;
             if (Input::IsKeyPressed(Key::ESCAPE))
             {

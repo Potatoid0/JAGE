@@ -64,9 +64,14 @@ namespace JAGE
         glfwSetFramebufferSizeCallback(m_Window, framebuffer_size_callback);
     }
 
+
+
 }
 
-
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
 
 /*
  * @brief Creates a GLFW-based JAGEWindow object
@@ -120,10 +125,7 @@ JAGEWindow::JAGEWindow()
     
 }
 */
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
+
 
 
 /*
