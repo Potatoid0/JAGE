@@ -7,12 +7,14 @@
 #include "jage_keys.hpp"
 #include "jage_event.hpp"
 #include "jage_application.hpp"
+#include "jage_renderer.hpp"
 
 namespace JAGE
 {
     class Application;
     class Window;
     class Input;
+    class Renderer;
 
 }
 

@@ -9,13 +9,15 @@
 //
 
 
-
 //#include "glad/glad.h" //needs to be included prior to GLFW
-#include "GLFW/glfw3.h"
+//#include "GLFW/glfw3.h"
+//#include "glad/glad.h" //needs to be included prior to GLFW
 //#include <string>
 //#include "jage_core.hpp"
 #include <functional>
-#include "jage_event.hpp"
+//#include "jage_event.hpp"
+#include "jage_input.hpp"
+#include "jage_renderer.hpp"
 
 
 namespace JAGE

@@ -4,15 +4,15 @@
 //
 //  Created by Benjamin Wulf on 1/13/26.
 //
-#include "glad/glad.h" //needs to be included prior to GLFW
-#include "GLFW/glfw3.h"
+//#include "glad/glad.h" //needs to be included prior to GLFW
+//#include "GLFW/glfw3.h"
 #include "jage_core.hpp"
-#include "jage_window.hpp"
-#include "jage_shaders.hpp"
-#include "stb_image/stb_image.h"
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
+//#include "jage_window.hpp"
+//#include "jage_shaders.hpp"
+//#include "stb_image/stb_image.h"
+//#include "glm/glm.hpp"
+//#include "glm/gtc/matrix_transform.hpp"
+//#include "glm/gtc/type_ptr.hpp"
 #include <iostream>
 #include <thread>
 #include <chrono>
@@ -23,17 +23,20 @@ namespace JAGE
     class TestApp : public Application
     {
     public:
-        void OnInitialize() override { std::cout << "[TestApp]: Attempting to Initialize" << std::endl; }
+        void OnInitialize() override
+        {
+            std::cout << "[TestApp]: Attempting to Initialize" << std::endl;
+        }
         void OnUpdate(float deltaTime) override
         {
-            glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // include depth buffer bit so it doesn't include previous frames
             //std::cout << "[TestApp] is updating" << std::endl;
             if (Input::IsKeyPressed(Key::ESCAPE))
             {
                 Close();
             }
+            
         }
+    private:
     };
 }
 

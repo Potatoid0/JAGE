@@ -5,8 +5,7 @@
 //  Created by Benjamin Wulf on 1/13/26.
 //
 
-#include "glad/glad.h" //needs to be included prior to GLFW
-#include "GLFW/glfw3.h"
+
 #include <iostream>
 #include "jage_window.hpp"
 
@@ -59,7 +58,7 @@ namespace JAGE
         }
         
         glfwGetFramebufferSize(m_Window, &m_Width, &m_Height);
-        glViewport(0, 0, m_Width, m_Height);
+        //glViewport(0, 0, m_Width, m_Height);
         
         glfwSetFramebufferSizeCallback(m_Window, framebuffer_size_callback);
     }

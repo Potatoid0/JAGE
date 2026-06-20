@@ -1,5 +1,4 @@
 #include "jage_application.hpp"
-#include "jage_input.hpp"
 #include <iostream>
 
 namespace JAGE
@@ -53,10 +52,11 @@ void Application::OnInitialize()
             //
             //std::cout << "INFO: Entering Core Loop" << std::endl;
             m_Window->PollEvents();
-            
             if(!m_Running) { break; }
             
             OnUpdate(tempDeltaTime);
+            
+            m_Renderer->Draw(); // I don't know if this is the right spot for this
             
             m_Window->SwapBuffers();
             

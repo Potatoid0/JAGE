@@ -1,8 +1,10 @@
 #ifndef JAGE_APPLICATION_HPP
 #define JAGE_APPLICATION_HPP
 
+//#include "jage_input.hpp"
 #include "jage_window.hpp"
-#include "jage_event.hpp"
+//#include "jage_event.hpp"
+//#include "jage_renderer.hpp"
 
 namespace JAGE
 {
@@ -10,6 +12,7 @@ namespace JAGE
     {
     private:
         std::unique_ptr<Window> m_Window;
+        std::unique_ptr<Renderer> m_Renderer;
         bool m_Running = true;
         
         static inline Application* s_Instance = nullptr;
@@ -28,6 +31,7 @@ namespace JAGE
         
         static Application& GetInstance() { return *s_Instance; }
         Window& GetWindow() { return *m_Window; }
+        Renderer& GetRenderer() { return *m_Renderer; }
         void Close() { m_Running = false; }
         
         

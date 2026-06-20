@@ -20,5 +20,5 @@ uniform float opacity;
 void main()
 {
     //FragColor = texture(ourTexture, texCoord) * vec4(ourColor, 1.0);
-    FragColor = mix(texture(ourTexture, texCoord), texture(secondTexture, vec2(texCoord.x*-1, texCoord.y)), opacity);
+    FragColor = mix(texture(ourTexture, texCoord), texture(secondTexture, vec2(texCoord.x*-1, texCoord.y)), 0.0f);
 }
