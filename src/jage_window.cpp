@@ -37,7 +37,11 @@ namespace JAGE
                 // Now use 'ptr' to access your class members or call the callback
                 if (ptr->m_Callback)
                 {
-                    std::cout << action << std::endl;
+                    //std::cout << action << std::endl;
+                    // checking action determines type of key event
+                    // 1 == press
+                    // 2 == hold
+                    // 0 == release (can add this optionally)
                     if(action == 1)
                     {
                         KeyPressEvent event(key);
