@@ -11,14 +11,18 @@ namespace JAGE
         s_Instance = this;
     
         m_Window = std::make_unique<Window>();
-        
         m_Window->Initialize(960, 540, "JAGE");
         m_Window->SetEventCallback([this](Event& e) {this->OnEvent(e);} );
+        
+        //m_Camera = std::make_unique<Camera>();
+        //m_Camera->Initialize();
         
     }
     
 void Application::OnInitialize()
 {
+    
+    
     //m_Window->Initialize();
     
     //m_Window->SetEventCallback([this](Event& e) {OnEvent(e); } );
@@ -54,7 +58,7 @@ void Application::OnInitialize()
             m_Window->PollEvents();
             if(!m_Running) { break; }
             
-            OnUpdate(tempDeltaTime);
+            OnUpdate(tempDeltaTime); // sandbox events here
             
             m_Renderer->Draw(); // I don't know if this is the right spot for this
             

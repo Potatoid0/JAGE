@@ -3,13 +3,22 @@
 
 namespace JAGE
 {
+    // Constructor
+    Renderer::Renderer()
+    {
+        
+    }
 
+    void Renderer::Initialize()
+    {
+        m_Camera = std::make_unique<Camera>();
+    }
     void Renderer::Draw()
     {
         
 
         
-        
+        // @TODO: Fix this absolute cluster f
         // === Copying from previous version ===
         float squareVertices[] =
             {
@@ -163,29 +172,36 @@ namespace JAGE
         
         //    newShader.setFloat("opacity", gameWindow.tempOpac); //ignore opacity for now
         
-        glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);                      // create vector of 1,0,0
-            glm::mat4 trans = glm::mat4(1.0f);                          // create identity matrix prior to transformations
-            trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f)); // apply desired translation to identity matrix
-            vec = trans * vec;                                          // apply the new translation matrix to vector
+        //glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);     // create vector of 1,0,0
+        //glm::mat4 trans = glm::mat4(1.0f);         // create identity matrix prior to transformations
+        //trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f)); // apply desired translation to identity matrix
+        //vec = trans * vec;                         // apply the new translation matrix to vector
+        
+        
+        
+        /*
         glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
         glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
         glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
         glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget); //subtracting origin from current position results in the desired direction
-            glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-            glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection)); //dot product between up and target direction gives perpendicular to both, resulting in the positive x axis
-            glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight); // similar to above
+        glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+        glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection)); //dot product between up and target direction gives perpendicular to both, resulting in the positive x axis
+        glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight); // similar to above
             // This is the Gram-Schmidt process if I want to do some studying up on linear algebra
-            
-            glm::mat4 model = glm::mat4(1.0f);
+        
+        
+        glm::mat4 model = glm::mat4(1.0f);
             //model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
             
-            glm::mat4 view = glm::lookAt(cameraPos, cameraTarget, up); // same as previously entered
+        glm::mat4 view = glm::lookAt(cameraPos, cameraTarget, up); // same as previously entered
+        //glm::mat4 view = glm::lookAt(m_Camera->m_Position, m_Camera->m_Target, m_Camera->m_ZUp);
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::perspective(glm::radians(45.0f), 960.0f/540.0f, 0.1f, 100.0f);
-        
+        */
+        glm::mat4 model = m_Camera->GetModel();
         newShader.setMat4("model", model);
-        newShader.setMat4("view", view);
-        newShader.setMat4("projection", projection);
+        newShader.setMat4("view", m_Camera->m_View);
+        newShader.setMat4("projection", m_Camera->m_Projection);
 
         // Issues with clipping, need to enable depth testing
         glEnable(GL_DEPTH_TEST);
@@ -200,6 +216,8 @@ namespace JAGE
                 
                 glBindVertexArray(cubeVAO);
         // Background
+        
+        /* === Inside actual Loop === */
         glClearColor(0.2f, 0.3f, 0.4f, 1.0f); // 0.2f, 0.3f, 0.3f, 1.0f
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // include depth buffer bit so it doesn't include previous frames
         
@@ -225,18 +243,24 @@ namespace JAGE
                     
                 }
                 //Trying to make a floor
-                model = glm::mat4(1.0f);
-                model = glm::scale(model, glm::vec3(1000.0f, 1.0f, 1000.0f));
-                model = glm::translate(model, glm::vec3(0.0f, -1.5f, 0.0f));
-                newShader.setMat4("model", model);
+                m_Camera->GetModel() = glm::mat4(1.0f);
+        m_Camera->GetModel() = glm::scale(m_Camera->GetModel(), glm::vec3(1000.0f, 1.0f, 1000.0f));
+        m_Camera->GetModel() = glm::translate(m_Camera->GetModel(), glm::vec3(0.0f, -1.5f, 0.0f));
+                newShader.setMat4("model", m_Camera->GetModel());
                 glDrawArrays(GL_TRIANGLES, 0, 36);
                 
                 //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
                 glBindVertexArray(0);
+        
+        
+        //Input to be moved later
+        
         // === End copying ===
         
         
         
     }
+
+
     
 }

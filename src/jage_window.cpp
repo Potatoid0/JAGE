@@ -61,6 +61,9 @@ namespace JAGE
         //glViewport(0, 0, m_Width, m_Height);
         
         glfwSetFramebufferSizeCallback(m_Window, framebuffer_size_callback);
+        
+        //glfwSetCursorPosCallback(m_Window, mouse_callback);
+
     }
 
 

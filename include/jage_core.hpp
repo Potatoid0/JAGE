@@ -8,6 +8,7 @@
 #include "jage_event.hpp"
 #include "jage_application.hpp"
 #include "jage_renderer.hpp"
+#include "jage_camera.hpp"
 
 namespace JAGE
 {
@@ -15,6 +16,8 @@ namespace JAGE
     class Window;
     class Input;
     class Renderer;
+    class Window;
+    class Camera;
 
 }
 

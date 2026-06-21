@@ -30,10 +30,17 @@ namespace JAGE
         void OnUpdate(float deltaTime) override
         {
             //std::cout << "[TestApp] is updating" << std::endl;
+            //Eventually move input into it's own sandbox/game-specific handling
             if (Input::IsKeyPressed(Key::ESCAPE))
             {
                 Close();
             }
+            if (Input::IsKeyPressed(Key::W))
+            {
+                //cameraPos.x += cameraSpeed * cameraFront.x;
+                //cameraPos.z += cameraSpeed * cameraFront.z;
+            }
+            
             
         }
     private:
