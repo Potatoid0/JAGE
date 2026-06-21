@@ -1,10 +1,21 @@
 #include "jage_camera.hpp"
-
+#include <iostream>
 namespace JAGE
 {
 Camera::Camera()
 {
+    std::cout << "Constructing Camera" << std::endl;
+   
     
+    //newShader.setMat4("model", model);
+    //newShader.setMat4("view", view);
+    //newShader.setMat4("projection", projection);
+    
+    
+}
+void Camera::Initialize()
+{
+    std::cout << "INFO: Initializing Camera(?)" << std::endl;
     m_Position = glm::vec3(0.0f, 0.0f, 3.0f);
     m_Front = glm::vec3(0.0f, 0.0f, -1.0f);
     m_Target = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -21,15 +32,5 @@ Camera::Camera()
     //glm::mat4 view = glm::lookAt(m_Camera->m_Position, m_Camera->m_Target, m_Camera->m_ZUp);
     m_Projection = glm::mat4(1.0f);
     m_Projection = glm::perspective(glm::radians(45.0f), 960.0f/540.0f, 0.1f, 100.0f);
-    
-    //newShader.setMat4("model", model);
-    //newShader.setMat4("view", view);
-    //newShader.setMat4("projection", projection);
-    
-    
-}
-void Camera::Initialize()
-{
-    //std::cout << "INFO: Initializing Camera(?)" << std::endl;
 }
 }

@@ -14,6 +14,9 @@ namespace JAGE
         m_Window->Initialize(960, 540, "JAGE");
         m_Window->SetEventCallback([this](Event& e) {this->OnEvent(e);} );
         
+        m_Renderer = std::make_unique<Renderer>();
+        m_Renderer->Initialize();
+        
         //m_Camera = std::make_unique<Camera>();
         //m_Camera->Initialize();
         

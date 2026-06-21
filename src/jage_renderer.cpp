@@ -12,6 +12,7 @@ namespace JAGE
     void Renderer::Initialize()
     {
         m_Camera = std::make_unique<Camera>();
+        m_Camera->Initialize();
     }
     void Renderer::Draw()
     {
