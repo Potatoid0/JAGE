@@ -37,9 +37,19 @@ namespace JAGE
                 // Now use 'ptr' to access your class members or call the callback
                 if (ptr->m_Callback)
                 {
-                    KeyPressEvent event(key);
-                    ptr->m_Callback(event);
+                    std::cout << action << std::endl;
+                    if(action == 1)
+                    {
+                        KeyPressEvent event(key);
+                        ptr->m_Callback(event);
+                    }//std::cout << glfwGetKeyName(key, scancode) << std::endl;
+                    if(action == 0)
+                    {
+                        KeyReleaseEvent event(key);
+                        ptr->m_Callback(event);
+                    }
                 }
+                
             });
         
         if(!m_Window)

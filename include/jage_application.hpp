@@ -33,7 +33,7 @@ namespace JAGE
         Window& GetWindow() { return *m_Window; }
         Renderer& GetRenderer() { return *m_Renderer; }
         void Close() { m_Running = false; }
-        
+        void MoveCamera();
         
     };
 

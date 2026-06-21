@@ -12,7 +12,9 @@ namespace JAGE
     public:
         Camera();
         void Initialize();
+        float m_Speed = 0.1f;
     //private:
+        void Forward();
         glm::vec3 m_Position;// = glm::vec3(0.0f, 0.0f, 3.0f);
         glm::vec3 m_Front;// = glm::vec3(0.0f, 0.0f, -1.0f);
         glm::vec3 m_Target;// = glm::vec3(0.0f, 0.0f, 0.0f);

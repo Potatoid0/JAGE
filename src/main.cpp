@@ -39,7 +39,11 @@ namespace JAGE
             {
                 //cameraPos.x += cameraSpeed * cameraFront.x;
                 //cameraPos.z += cameraSpeed * cameraFront.z;
+                MoveCamera();
+                //std::cout << "AAA";
+                
             }
+            
             
             
         }

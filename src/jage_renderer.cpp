@@ -11,8 +11,11 @@ namespace JAGE
 
     void Renderer::Initialize()
     {
+        
         m_Camera = std::make_unique<Camera>();
         m_Camera->Initialize();
+        
+        
     }
     void Renderer::Draw()
     {
@@ -199,8 +202,8 @@ namespace JAGE
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::perspective(glm::radians(45.0f), 960.0f/540.0f, 0.1f, 100.0f);
         */
-        glm::mat4 model = m_Camera->GetModel();
-        newShader.setMat4("model", model);
+        //glm::mat4 model = m_Camera->GetModel();
+        newShader.setMat4("model", m_Camera->GetModel());
         newShader.setMat4("view", m_Camera->m_View);
         newShader.setMat4("projection", m_Camera->m_Projection);
 

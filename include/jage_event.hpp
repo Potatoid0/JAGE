@@ -23,6 +23,15 @@ namespace JAGE
     private:
         int m_Key;
     };
+    class KeyReleaseEvent : public Event
+    {
+    public:
+        KeyReleaseEvent(int key) : m_Key(key) {}
+        EventType GetType() const override { return EventType::KeyRelease; }
+        int GetKey() const { return m_Key; }
+    private:
+        int m_Key;
+    };
     
 }
 

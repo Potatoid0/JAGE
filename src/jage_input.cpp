@@ -13,5 +13,12 @@ void JAGE::Input::OnEvent(Event& e)
     {
         auto& keyEvent = static_cast<KeyPressEvent&>(e);
         UpdateKeyState(keyEvent.GetKey(), true);
+        //std::cout << "aaaa" << std::endl;
+    }
+    if(e.GetType() == EventType::KeyRelease)
+    {
+        auto& keyEvent = static_cast<KeyReleaseEvent&>(e);
+        UpdateKeyState(keyEvent.GetKey(), false);
+        //std::cout << "aaaa" << std::endl;
     }
 }

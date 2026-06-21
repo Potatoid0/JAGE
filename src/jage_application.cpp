@@ -71,6 +71,12 @@ void Application::OnInitialize()
         
         OnShutdown();
     }
+    void Application::MoveCamera()
+    {
+        //cameraPos.x += cameraSpeed * cameraFront.x;
+        //cameraPos.z += cameraSpeed * cameraFront.z;
+        m_Renderer->m_Camera->Forward();
+    }
 }
 
 

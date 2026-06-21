@@ -17,6 +17,7 @@ void Camera::Initialize()
 {
     std::cout << "INFO: Initializing Camera(?)" << std::endl;
     m_Position = glm::vec3(0.0f, 0.0f, 3.0f);
+
     m_Front = glm::vec3(0.0f, 0.0f, -1.0f);
     m_Target = glm::vec3(0.0f, 0.0f, 0.0f);
     
@@ -32,5 +33,17 @@ void Camera::Initialize()
     //glm::mat4 view = glm::lookAt(m_Camera->m_Position, m_Camera->m_Target, m_Camera->m_ZUp);
     m_Projection = glm::mat4(1.0f);
     m_Projection = glm::perspective(glm::radians(45.0f), 960.0f/540.0f, 0.1f, 100.0f);
+}
+void Camera::Forward()
+{
+    //cameraPos.x += cameraSpeed * cameraFront.x;
+    //cameraPos.z += cameraSpeed * cameraFront.z;
+    //std::cout << "aaa" << std::endl;
+
+    m_Position.x += m_Speed * m_Front.x;
+    m_Position.z += m_Speed * m_Front.z;
+    
+    m_View = glm::lookAt(m_Position, m_Position + m_Front, m_Up);
+    
 }
 }

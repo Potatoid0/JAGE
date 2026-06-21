@@ -17,9 +17,10 @@ namespace JAGE
         void Initialize();
         void Draw();
         //void SetBackgroundColor(glm::vec4 RGBA) { m_BackgroundColor = RGBA; }
-        //glm::vec4 GetBackgroundColor() { return m_BackgroundColor; }   
-    private:
+        //glm::vec4 GetBackgroundColor() { return m_BackgroundColor; }
         //std::unique_ptr<Camera> m_Camera;
+
+    //private:
         std::unique_ptr<Camera> m_Camera;
         //glm::vec4 m_BackgroundColor = glm::vec4(0.2f, 0.3f, 0.3f, 1.0f);
     };
